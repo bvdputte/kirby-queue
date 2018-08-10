@@ -1,7 +1,5 @@
 <?php
 
-use bvdputte\kirbyQueue\kirbyQueue;
-
 // Bootstrap Kirby (from with the plugin's folder)
 require '../../../kirby/bootstrap.php';
 $kirbyPath = dirname(__FILE__) . "/../../../../";
@@ -17,7 +15,8 @@ $kirby = new Kirby([
 ]);
 
 // Check for jobs in the queue
-if (!queue::hasJobs()) exit();
-while (queue::hasJobs()) {
-    queue::work();
+if (!kq()->hasJobs()) exit();
+
+while (kq()->hasJobs()) {
+    kq()->work();
 }
