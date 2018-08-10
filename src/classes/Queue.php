@@ -9,30 +9,12 @@ use Kirby\Toolkit\Collection;
 class Queue
 {
     public $name;
+    private $handler;
     private $current_job;
-    private $handlers = [];
 
-    function __construct($name = null) {
+    function __construct($name, $handler) {
         $this->name = $name;
-    }
-
-    /**
-     * Defines a handler to perform when job is worked on
-     * @param  string    Name of the handler
-     * @param  Callable  Callable Closure with the action the handler needs to perform
-     */
-    public function addHandler($name, $handler) {
-        $this->handlers[$name] = $handler;
-    }
-
-    /**
-     * Defines an array of handlers to perform when job is worked on
-     * @param  array    Associative array with all the handlers
-     * - Key: Name of the handler
-     * - Value: Callable Closure with the action the handler needs to perform
-     */
-    public function addHandlers($handlers) {
-        $this->handlers = array_merge($this->handlers, $handlers);
+        $this->handler = $handler;
     }
 
     /**
@@ -40,7 +22,7 @@ class Queue
      * @param string  Name of the action to be performed
      * @param mixed   Any data you want to pass in
      */
-    public function addJob($name, $data = null)
+    public function addJob($data = null)
     {
         $id = uniqid();
 
@@ -49,7 +31,7 @@ class Queue
         yaml::write($jobfile, [
             'id' => $id,
             'added' => date('c'),
-            'name' => $name,
+            //'name' => $name,
             'data' => $data
         ]);
     }
@@ -132,11 +114,10 @@ class Queue
             $this->current_job = $this->_getNextJob();
             $currJob = $this->current_job;
             try {
-                if (!isset($this->handlers[$currJob->name()])
-                    or !is_callable($this->handlers[$currJob->name()])) {
-                    throw new \Error('Action "' . $currJob->name() . '" not defined');
+                if (!is_callable($this->handler)) {
+                    throw new \Error('Handler for "' . $currJob->name() . '" is not defined');
                 }
-                if (call_user_func($this->handlers[$currJob->name()], $currJob) === false) {
+                if (call_user_func($this->handler, $currJob) === false) {
                     throw new \Error('Job returned false');
                 }
             } catch (\Exception $e) {
@@ -250,7 +231,8 @@ class Queue
      * @return string
      */
     private function _getFolderPath() {
-        return kirby()->roots()->site() . DS . kirby()->option("bvdputte.kirbyqueue.root");
+        $root = kirby()->option("bvdputte.kirbyqueue.root");
+        return kirby()->roots()->site() . DS . $root . DS . $this->name;
     }
 
     /**
