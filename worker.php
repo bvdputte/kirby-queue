@@ -14,17 +14,5 @@ $kirby = new Kirby([
     ],
 ]);
 
-// Get defined queues
-$queues = kirby()->option("bvdputte.kirbyqueue.queues");
-// Work them
-foreach ($queues as $queue => $handler) {
-    $kq = kqueue($queue);
-    // Check for jobs in the queue
-    if (!$kq->hasJobs()) continue;
-
-    while ($kq->hasJobs()) {
-        $kq->work();
-    }
-}
-
-exit();
+// Work the queue
+bvdputte\kirbyQueue\queueworker::work();

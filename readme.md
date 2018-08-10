@@ -13,7 +13,13 @@ Run `composer install` from this directory.
 
 ### Setup worker
 
+#### 1. Via Cron
+
 Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.wikipedia.org/wiki/Cron) or similar at the desired interval (.e.g. each minute).
+
+#### 2. Route
+
+There's also a route available at `kqueueworker` that you can trigger to work the queues.
 
 ### Define queues
 
