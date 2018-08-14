@@ -20,8 +20,6 @@ class Queueworker {
             // Restore the jobs with a later due date
             $kq->restoreJobs("postponed");
         }
-
-        exit();
     }
 
 }

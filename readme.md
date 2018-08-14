@@ -14,11 +14,17 @@ Put the `kirby-queue` folder in your `site/plugins` folder.
 
 #### 1. Via Cron
 
-Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.wikipedia.org/wiki/Cron) or similar at the desired interval (.e.g. each minute).
+Preferred method. Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.wikipedia.org/wiki/Cron) or similar at the desired interval (.e.g. each minute).
 
 #### 2. Route
 
 There's also a route available at `kqueueworker-supersecreturlkey` that you can trigger to work the queues. The URL can be adjusted [via the options](#options-and-opinionated-defaults).
+
+#### 3. Poor man's cron
+
+When cron is not installed on your server, you can also _fake_ cron by enabling `option("bvdputte.kirbyqueue.poormanscron", true);`.
+
+The default interval for _poor man's cron_ is 60sec. You can change this with `option("bvdputte.kirbyqueue.poormanscron.interval", 60*60);` to hourly e.g.
 
 ### Custom worker(s)
 
@@ -85,7 +91,7 @@ The default folder name for the queues is `queues`. This will be placed in the `
 Each queue will get its own subfolder with its name as foldername.
 
 ```php
-kirby()->option("bvdputte.kirbyqueue.route.pattern");
+kirby()->option("bvdputte.kirbyqueue.worker.route");
 ```
 
 The URL for the route to trigger the built in worker. Might be  useful if you want to trigger the worker via an URL. Be sure to add a secret hash to it so it can't be used as an attack vector.

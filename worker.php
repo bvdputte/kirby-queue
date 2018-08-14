@@ -18,3 +18,4 @@ $kirby = new Kirby([
 
 // Work the queue
 Queueworker::work();
+exit();

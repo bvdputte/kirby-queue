@@ -7,15 +7,18 @@ require __DIR__ . DS . "src" . DS . "classes" . DS . "Queueworker.php";
 Kirby::plugin('bvdputte/kirbyqueue', [
     'options' => [
         'root' => 'queues',
-        'route.pattern' => 'kqueueworker-supersecreturlkey',
+        'worker.route' => 'kqueueworker-supersecreturlkey',
+        'poormanscron' => false,
+        'poormanscron.interval' => 60, // in seconds
         'queues' => []
     ],
     'routes' => function ($kirby) {
         return [
             [
-                'pattern' => $kirby->option("bvdputte.kirbyqueue.route.pattern"),
+                'pattern' => $kirby->option("bvdputte.kirbyqueue.worker.route"),
                 'action'  => function () {
                     bvdputte\kirbyQueue\Queueworker::work();
+                    exit();
                 }
             ]
         ];
@@ -41,5 +44,22 @@ if (! function_exists("kqJob")) {
         $job->data($data);
         
         return $job;
+    }
+}
+
+/*
+    For servers without cron, enable "poormanscron"
+*/
+if (option("bvdputte.kirbyqueue.poormanscron")) {
+    $root = $kirby->roots()->site() . DS . option("bvdputte.kirbyqueue.root");
+    $pmcFile = $root . DS . ".pmc";
+
+    if (!f::exists($pmcFile)) f::write($pmcFile, time());
+    $nextRun = f::read($pmcFile) + option("bvdputte.kirbyqueue.poormanscron.interval");
+    
+    if( $nextRun < time() ) {
+        // Work the queue
+        bvdputte\kirbyQueue\Queueworker::work();
+        f::write($pmcFile, time());
     }
 }
