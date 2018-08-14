@@ -1,5 +1,7 @@
 <?php
 
+use bvdputte\kirbyQueue\Queueworker;
+
 // Bootstrap Kirby (from with the plugin's folder)
 require '../../../kirby/bootstrap.php';
 $kirbyPath = dirname(__FILE__) . "/../../../../";
@@ -15,4 +17,4 @@ $kirby = new Kirby([
 ]);
 
 // Work the queue
-bvdputte\kirbyQueue\queueworker::work();
+Queueworker::work();
