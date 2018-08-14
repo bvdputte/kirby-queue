@@ -1,13 +1,12 @@
 # Kirby queue plugin
 
-A simple queue utility plugin for the Kirby 3 cms. It enables workers in Kirby that can do tasks (in the background) at scheduled intervals (cron) by working through queues of jobs.
+A simple queue utility plugin for Kirby 3. It enables workers in Kirby that can do tasks (in the background) at scheduled intervals (cron) by working through queues of jobs.
 
 ⚠️ This plugin is currently a playground for me to test the new Kirby plugin system. Do not use in production _yet_. ⚠️ 
 
 ## Installation
 
 Put the `kirby-queue` folder in your `site/plugins` folder.
-Run `composer install` from this directory.
 
 ## Usage
 
@@ -19,24 +18,27 @@ Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.w
 
 #### 2. Route
 
-There's also a route available at `kqueueworker` that you can trigger to work the queues.
+There's also a route available at `kqueueworker-supersecreturlkey` that you can trigger to work the queues. The URL can be adjusted [via the options](#options-and-opinionated-defaults).
+
+### Custom worker(s)
+
+If you need your own worker logic (_e.g. workers that need to run at different intervals_), you can create your custom worker by extending the `Queueworker` class.
 
 ### Define queues
 
 Queues are defined in the config file. Pass them as an associative array: `[name] => function handler($job) {}`. The handler is a closure that is being called to process job by the worker.
 
-```
-
+```php
 'bvdputte.kirbyqueue.queues' => [
     'queuename' => function($job) {
 
         // Get your data
-        $propa = $job->get('propA');
-        $propb = $job->get('propB');
+        $foo = $job->get('foo');
+        $bar = $job->get('bar');
     
         // Do something with your data, for example: send something to kirbylog
         try {
-            kirbylog("test")->log($propa . " " . $propb);
+            kirbylog("test")->log($foo . " " . $bar);
         } catch (Exception $e) {
             // Throw an error to fail a job
             throw new Exception($e->getMessage());
@@ -46,27 +48,44 @@ Queues are defined in the config file. Pass them as an associative array: `[name
         // No need to return or display anything else!
     }
 ],
-
 ```
 
-You can define as many queues as you need, but each queue only has 1 handler.
+- 💡 You can define as many queues as you need, but each queue only has 1 handler.
+- 💡 The queues will be worked through in the order as defined in the `queues` option.
 
 ### Add jobs
 
-Use the `kqueue()` helper to add a job to the queue you'ld like to handle it. You can also pass data using an associative array.
-
-```
-
-$logQueue = kqueue("queuename");
-$logQueue->addJob([
-    'propA' => uniqid(),
-    'propB' => uniqid()
+```php
+$myQueue = kqQueue("queuename"); // "queuename must be the same as set in the options
+$myJob = kqJob([ // Pass the variables needed in the handler
+    'foo' => "foo",
+    'bar' => "bar"
 ]);
-
+$myQueue->addJob($myJob);
 ```
+
+### Schedule jobs
+
+```php
+$tomorrow = new DateTime('tomorrow');
+$myJob->setDueDate($tomorrow->getTimestamp());
+```
+
+You can also define a "due date" (UNIX Timestamp) for your job. Your job will be ignored until then.
+
+💡 Take into account the interval you've defined to trigger your worker, as due dates only get be checked when the worker is working through the queue.
 
 ## Options and opinionated defaults
 
-The default folder name for the queues is `queues`. This will be placed in the `/site/` folder. Its name can be changed with `kirby()->option("bvdputte.kirbyqueue.roots");`.
+```php
+kirby()->option("bvdputte.kirbyqueue.roots");
+```
 
+The default folder name for the queues is `queues`. This will be placed in the `/site/` folder.
 Each queue will get its own subfolder with its name as foldername.
+
+```php
+kirby()->option("bvdputte.kirbyqueue.route.pattern");
+```
+
+The URL for the route to trigger the built in worker. Might be  useful if you want to trigger the worker via an URL. Be sure to add a secret hash to it so it can't be used as an attack vector.

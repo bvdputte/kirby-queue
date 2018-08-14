@@ -9,13 +9,16 @@ class Queueworker {
         $queues = kirby()->option("bvdputte.kirbyqueue.queues");
         // Work them
         foreach ($queues as $queue => $handler) {
-            $kq = kqueue($queue);
+            $kq = kqQueue($queue);
             // Check for jobs in the queue
             if (!$kq->hasJobs()) continue;
 
             while ($kq->hasJobs()) {
-                $kq->work();
+                $kq->workFirstJob();
             }
+
+            // Restore the jobs with a later due date
+            $kq->restoreJobs("postponed");
         }
 
         exit();
