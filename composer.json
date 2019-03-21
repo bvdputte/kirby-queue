@@ -1,0 +1,20 @@
+{
+    "name": "bvdputte/kirby-queue",
+    "description": "A simple queue utility plugin for Kirby 3. It enables workers in Kirby that can do tasks (in the background) at scheduled intervals (cron) by working through queues of jobs.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bart Vandeputte",
+            "email": "bart.vdputte@gmail.com"
+        }
+    ],
+    "keywords": [
+        "kirby3",
+        "kirby3-plugin",
+        "queue",
+        "cron",
+        "workers",
+        "tasks",
+        "background tasks"
+    ]
+}

@@ -2,11 +2,11 @@
 
 A simple queue utility plugin for Kirby 3. It enables workers in Kirby that can do tasks (in the background) at scheduled intervals (cron) by working through queues of jobs.
 
-⚠️ This plugin is currently a playground for me to test the new Kirby plugin system. Do not use in production _yet_. ⚠️ 
-
 ## Installation
 
-Put the `kirby-queue` folder in your `site/plugins` folder.
+- unzip [master.zip](https://github.com/bvdputte/kirby-queue/archive/master.zip) as folder `site/plugins/kirby-queue` or
+- `git submodule add https://github.com/bvdputte/kirby-queue.git site/plugins/kirby-fingerprint` or
+- `composer require bvdputte/kirby-queue`
 
 ## Usage
 
