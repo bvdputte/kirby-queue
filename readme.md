@@ -14,7 +14,9 @@ A simple queue utility plugin for Kirby 3. It enables workers in Kirby that can 
 
 #### 1. Via Cron
 
-Preferred method. Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.wikipedia.org/wiki/Cron) or similar at the desired interval (.e.g. each minute).
+Add the worker file `site/plugins/kirby-queue/worker.php` to [cron](https://en.wikipedia.org/wiki/Cron) or similar at the desired interval (.e.g. each minute).
+
+💡 This is the preferred method for setting up kirby-queue.
 
 #### 2. Route
 
@@ -84,14 +86,24 @@ You can also define a "due date" (UNIX Timestamp) for your job. Your job will be
 ## Options and opinionated defaults
 
 ```php
-kirby()->option("bvdputte.kirbyqueue.roots");
+option("bvdputte.kirbyqueue.roots");
 ```
 
 The default folder name for the queues is `queues`. This will be placed in the `/site/` folder.
 Each queue will get its own subfolder with its name as foldername.
 
 ```php
-kirby()->option("bvdputte.kirbyqueue.worker.route");
+option("bvdputte.kirbyqueue.worker.route");
 ```
 
 The URL for the route to trigger the built in worker. Might be  useful if you want to trigger the worker via an URL. Be sure to add a secret hash to it so it can't be used as an attack vector.
+
+## Disclaimer
+
+This plugin is provided "as is" with no guarantee. Use it at your own risk and always test it yourself before using it in a production environment. If you find any issues, please [create a new issue](https://github.com/bvdputte/kirby-queue/issues/new).
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
+
+It is discouraged to use this plugin in any project that promotes racism, sexism, homophobia, animal abuse, violence or any other form of hate speech.
