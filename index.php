@@ -4,6 +4,9 @@ require __DIR__ . DS . "src" . DS . "classes" . DS . "Job.php";
 require __DIR__ . DS . "src" . DS . "classes" . DS . "Queue.php";
 require __DIR__ . DS . "src" . DS . "classes" . DS . "Queueworker.php";
 
+// For composer
+@include_once __DIR__ . '/vendor/autoload.php';
+
 Kirby::plugin('bvdputte/kirbyqueue', [
     'options' => [
         'root' => 'queues',
