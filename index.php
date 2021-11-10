@@ -54,7 +54,7 @@ if (! function_exists("kqJob")) {
     For servers without cron, enable "poormanscron"
 */
 if (option("bvdputte.kirbyqueue.poormanscron")) {
-    $root = $kirby->roots()->site() . DS . option("bvdputte.kirbyqueue.root");
+    $root = kirby()->roots()->site() . DS . option("bvdputte.kirbyqueue.root");
     $pmcFile = $root . DS . ".pmc";
 
     if (!f::exists($pmcFile)) f::write($pmcFile, time());
