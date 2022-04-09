@@ -86,7 +86,7 @@ You can also define a "due date" (UNIX Timestamp) for your job. Your job will be
 ## Options and opinionated defaults
 
 ```php
-option("bvdputte.kirbyqueue.roots");
+option("bvdputte.kirbyqueue.root");
 ```
 
 The default folder name for the queues is `queues`. This will be placed in the `/site/` folder.
