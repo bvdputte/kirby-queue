@@ -3,8 +3,8 @@
 use bvdputte\kirbyQueue\Queueworker;
 
 // Bootstrap Kirby (from with the plugin's folder)
-require '../../../kirby/bootstrap.php';
-$kirbyPath = dirname(__FILE__) . "/../../../../";
+$kirbyPath = realpath(__DIR__ . "/../../../");
+require $kirbyPath . '/kirby/bootstrap.php';
 
 // Instantiate Kirby
 $kirby = new Kirby([
