@@ -63,6 +63,8 @@ Queues are defined in the config file. Pass them as an associative array: `[name
 
 ### Add jobs
 
+Add the following code into a controller or where ever you want to execute it. 
+
 ```php
 $myQueue = kqQueue("queuename"); // "queuename must be the same as set in the options
 $myJob = kqJob([ // Pass the variables needed in the handler
@@ -71,6 +73,28 @@ $myJob = kqJob([ // Pass the variables needed in the handler
 ]);
 $myQueue->addJob($myJob);
 ```
+
+For testing purposes create a route
+
+```php
+// config.php
+'routes'    => [
+    [
+        'pattern' => 'addtokirbyqueue/queuename',
+        'action'  => function () {
+            $myQueue = kqQueue("queuename"); // "queuename must be the same as set in the options
+            $myJob = kqJob([ // Pass the variables needed in the handler
+                'foo' => "foo",
+                'bar' => "bar",
+            ]);
+            $myQueue->addJob($myJob);
+            exit;
+        },
+    ]
+ ]
+```
+
+and then call http://localhost/addtokirbyqueue/queuename to fill the queue
 
 ### Schedule jobs
 
