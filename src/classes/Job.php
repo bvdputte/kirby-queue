@@ -57,12 +57,12 @@ class Job extends Obj
 
     /**
      * Get variables from the data property
-     * @param String  Key
-     * @param Mixed  Value (optional)
+     * @param String\Array Property
+     * @param Mixed Fallback (optional)
      */
-    public function get(String $key, $default = null)
+    public function get($property, $fallback = null)
     {
-        return isset($this->data[$key]) ? $this->data[$key] : $default;
+        return isset($this->data[$property]) ? $this->data[$property] : $fallback;
     }
 
     /**
