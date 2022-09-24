@@ -1,8 +1,8 @@
 <?php
 
-require __DIR__ . DS . "src" . DS . "classes" . DS . "Job.php";
-require __DIR__ . DS . "src" . DS . "classes" . DS . "Queue.php";
-require __DIR__ . DS . "src" . DS . "classes" . DS . "Queueworker.php";
+require __DIR__ . "/src/classes/Job.php";
+require __DIR__ . "/src/classes/Queue.php";
+require __DIR__ . "/src/classes/Queueworker.php";
 
 // For composer
 @include_once __DIR__ . '/vendor/autoload.php';
@@ -45,7 +45,7 @@ if (! function_exists("kqJob")) {
     function kqJob($data) {
         $job = new bvdputte\kirbyQueue\Job();
         $job->data($data);
-        
+
         return $job;
     }
 }
@@ -54,12 +54,12 @@ if (! function_exists("kqJob")) {
     For servers without cron, enable "poormanscron"
 */
 if (option("bvdputte.kirbyqueue.poormanscron")) {
-    $root = kirby()->roots()->site() . DS . option("bvdputte.kirbyqueue.root");
-    $pmcFile = $root . DS . ".pmc";
+    $root = kirby()->roots()->site() . '/' . option("bvdputte.kirbyqueue.root");
+    $pmcFile = $root . "/.pmc";
 
     if (!f::exists($pmcFile)) f::write($pmcFile, time());
     $nextRun = f::read($pmcFile) + option("bvdputte.kirbyqueue.poormanscron.interval");
-    
+
     if( $nextRun < time() ) {
         // Work the queue
         bvdputte\kirbyQueue\Queueworker::work();

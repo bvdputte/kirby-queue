@@ -70,7 +70,7 @@ class Job extends Obj
      * @param String  Path
      */
     public function write(String $path) {
-        $jobFileName = $path . DS . $this->id . '.yml';
+        $jobFileName = $path . '/' . $this->id . '.yml';
 
         $props = get_object_vars($this);
         yaml::write($jobFileName, $props);

@@ -25,7 +25,7 @@ class Queue
     public function addJob($job) {
         $job->write($this->_roots("root"));
     }
-    
+
     /**
      * Removes a job from the queue
      * @param  string  Path to job file
@@ -44,13 +44,13 @@ class Queue
         $file = basename($path);
         $typeDir = basename(dirname($path));
         // Jail inside the Queue root
-        $path = $this->_roots("root") . DS . $typeDir . DS . $file;
+        $path = $this->_roots("root") . '/' . $typeDir . '/' . $file;
 
         if(!f::exists($path)) throw new \Error('Job not found');
 
         f::move(
             $path,
-            $this->_roots("root") . DS . $file
+            $this->_roots("root") . '/' . $file
         );
     }
 
@@ -63,7 +63,7 @@ class Queue
         $jobFiles = dir::read($dir);
 
         foreach($jobFiles as $jobFile) {
-            $this->restoreJob($dir . DS . $jobFile);
+            $this->restoreJob($dir . '/' . $jobFile);
         }
     }
 
@@ -83,7 +83,7 @@ class Queue
         if ($this->hasJobs()) {
             $this->currentJob = $this->_getNextJob();
             $currJob = $this->currentJob;
-            f::remove($this->_roots("root") . DS . $currJob->getId() . ".yml");
+            f::remove($this->_roots("root") . '/' . $currJob->getId() . ".yml");
 
             $dueDate = $currJob->getDueDate();
             if ( isset($dueDate) && ($dueDate > time()) ) {
@@ -144,7 +144,7 @@ class Queue
      * @throws Error  When failed Job with ID is not found
      */
     // private function _findFailedJobById($id) {
-    //     $filename = $this->_roots("failed") . DS . $id . '.yml';
+    //     $filename = $this->_roots("failed") . '/ . $id . '.yml';
 
     //     if (!f::exists($filename)) throw new \Error('Job not found');
 
@@ -183,7 +183,7 @@ class Queue
             if (substr($jobfile,0,1) == '.') continue;
 
             // Return first jobfile we find
-            return $queueDir . DS . $jobfile;
+            return $queueDir . '/' . $jobfile;
         }
         return false;
     }
@@ -236,7 +236,7 @@ class Queue
         }
 
         if (in_array($type, $this->statuses)) {
-            return $queueRoot . DS . "." . $type;
+            return $queueRoot . '/' . "." . $type;
         } else {
             throw new \Error('Status "' . $type . '" not found');
         }
@@ -248,27 +248,27 @@ class Queue
      */
     private function _getRootFolder() {
         $root = kirby()->option("bvdputte.kirbyqueue.root");
-        return kirby()->roots()->site() . DS . $root . DS . $this->name;
+        return kirby()->roots()->site() . '/' . $root . '/' . $this->name;
     }
 
     /**
      * Prepare environment before work
      */
     private function _setWorking() {
-        f::write($this->_roots("root") . DS . '.working', time());
+        f::write($this->_roots("root") . '/.working', time());
     }
     /**
      * Clean up environment before work
      */
     private function _unsetWorking() {
         $this->currentJob = null;
-        f::remove($this->_roots("root") . DS . '.working');
+        f::remove($this->_roots("root") . '/.working');
     }
     /**
      * Checks if the "subfolder that holds the job that is being processed" exists
      * @return bool
      */
     private function _isWorking() {
-        return f::exists($this->_roots("root") . DS . '.working');
+        return f::exists($this->_roots("root") . '/.working');
     }
 }
